@@ -34,3 +34,11 @@ function create(code: number, message: string, name: string): DomainError {
 export function ValidationError(message: string, code: number = 400): DomainError {
 	return create(code, `Validation error: ${message}`, 'ValidationError');
 }
+
+// ============================================
+// Errors For External Services
+// ============================================
+
+export function ExternalServiceError(message: string, code: number = 500): DomainError {
+	return create(code, `External service error: ${message}`, 'ExternalServiceError');
+}
