@@ -1,3 +1,5 @@
+import DomainValidatorUtils from "@domain/utils/validator-domain.util";
+
 /**
  * Ecommerce Product entity
  */
@@ -36,6 +38,18 @@ function filterByMaxPrice(items: IEcommerceProduct[], maxPrice: number): IEcomme
 // ============================================
 // Commands (Escritura - Retornan nueva instancia)
 // ============================================
+
+function validate(jurisdiction: IEcommerceProduct): void {
+	DomainValidatorUtils.validateRequiredString('id', jurisdiction.id);
+	DomainValidatorUtils.validateRequiredString('name', jurisdiction.name);
+	DomainValidatorUtils.validateRequiredString('nameEs', jurisdiction.nameEs);
+	DomainValidatorUtils.validateRequiredString('shortDescription', jurisdiction.shortDescription);
+	DomainValidatorUtils.validateRequiredString('description', jurisdiction.description);
+	DomainValidatorUtils.validateRequiredString('sku', jurisdiction.sku);
+	DomainValidatorUtils.validatePositiveNumber('unitPrice', jurisdiction.unitPrice);
+	DomainValidatorUtils.validatePositiveNumber('weight', jurisdiction.weight);
+	DomainValidatorUtils.validatePositiveNumber('timeToServe', jurisdiction.timeToServe);
+}
 
 function create(
 	id: string,
