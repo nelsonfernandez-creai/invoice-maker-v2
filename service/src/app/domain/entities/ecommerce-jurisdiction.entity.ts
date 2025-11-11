@@ -1,4 +1,4 @@
-import DomainValidatorUtils from "@domain/utils/validator-domain.util";
+import DomainValidatorUtils from '@domain/utils/validator-domain.util';
 
 /**
  * Ecommerce Jurisdiction entity
@@ -14,6 +14,10 @@ export interface IEcommerceJurisdiction {
 // Commands (Escritura - Retornan nueva instancia)
 // ============================================
 
+/**
+ * Validates the ecommerce jurisdiction
+ * @param jurisdiction - The ecommerce jurisdiction to validate
+ */
 function validate(jurisdiction: IEcommerceJurisdiction): void {
 	DomainValidatorUtils.validateRequiredString('taxId', jurisdiction.taxId);
 	DomainValidatorUtils.validateRequiredString('jurisdictionId', jurisdiction.jurisdictionId);
@@ -21,6 +25,14 @@ function validate(jurisdiction: IEcommerceJurisdiction): void {
 	DomainValidatorUtils.validateRequiredString('customerCountry', jurisdiction.customerCountry);
 }
 
+/**
+ * Creates a new ecommerce jurisdiction
+ * @param taxId - The tax id
+ * @param jurisdictionId - The jurisdiction id
+ * @param amount - The amount
+ * @param customerCountry - The customer country
+ * @returns The new ecommerce jurisdiction
+ */
 function create(
 	taxId: string,
 	jurisdictionId: string,
@@ -32,7 +44,6 @@ function create(
 
 	return item;
 }
-
 
 export const EcommerceJurisdiction = {
 	create,

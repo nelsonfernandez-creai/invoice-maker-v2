@@ -32,7 +32,6 @@ function create(id: string, name: string, skus: number): IBussinesActivity {
 
 export const BussinesActivity = {
 	create,
-	validate,
 } as const;
 
 export default BussinesActivity;

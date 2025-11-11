@@ -19,18 +19,39 @@ export interface IEcommerceProduct {
 // Queries (Lectura)
 // ============================================
 
+/**
+ * Gets the text to hash for the item
+ * @param item - The item to get the text to hash
+ * @returns The text to hash
+ */
 function getTextToHash(item: IEcommerceProduct): string {
 	return `${item.name} ${item.nameEs} ${item.shortDescription} ${item.description}`;
 }
 
+/**
+ * Gets the text to embed for the item
+ * @param item - The item to get the text to embed
+ * @returns The text to embed
+ */
 function getTextToEmbed(item: IEcommerceProduct): string {
 	return `${item.name} ${item.nameEs} ${item.shortDescription} ${item.description}`;
 }
 
+/**
+ * Checks if the item is tangible
+ * @param item - The item to check if it is tangible
+ * @returns True if the item is tangible, false otherwise
+ */
 function isTangible(item: IEcommerceProduct): boolean {
 	return item.timeToServe === 0;
 }
 
+/**
+ * Filters the items by the maximum price
+ * @param items - The items to filter
+ * @param maxPrice - The maximum price
+ * @returns The items filtered by the maximum price
+ */
 function filterByMaxPrice(items: IEcommerceProduct[], maxPrice: number): IEcommerceProduct[] {
 	return items.filter((item) => item.unitPrice <= maxPrice);
 }
@@ -39,6 +60,10 @@ function filterByMaxPrice(items: IEcommerceProduct[], maxPrice: number): IEcomme
 // Commands (Escritura - Retornan nueva instancia)
 // ============================================
 
+/**
+ * Validates the ecommerce product
+ * @param product - The ecommerce product to validate
+ */
 function validate(jurisdiction: IEcommerceProduct): void {
 	DomainValidatorUtils.validateRequiredString('id', jurisdiction.id);
 	DomainValidatorUtils.validateRequiredString('name', jurisdiction.name);
@@ -62,17 +87,10 @@ function create(
 	weight: number,
 	timeToServe: number
 ): IEcommerceProduct {
-	return {
-		id,
-		name,
-		nameEs,
-		shortDescription,
-		description,
-		sku,
-		unitPrice,
-		weight,
-		timeToServe,
-	};
+	const item = { id, name, nameEs, shortDescription, description, sku, unitPrice, weight, timeToServe };
+	validate(item);
+
+	return item;
 }
 
 // ============================================

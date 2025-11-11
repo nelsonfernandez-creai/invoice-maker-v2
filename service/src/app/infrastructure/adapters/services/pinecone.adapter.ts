@@ -105,7 +105,7 @@ async function deleteIds(pinecone: Pinecone, config: PineconeConfig, ids: string
 // Commands
 // ============================================
 
-const create = (pinecone: Pinecone, config: PineconeConfig): IVectorStorePort => {
+const createPineconeAdapter = (pinecone: Pinecone, config: PineconeConfig): IVectorStorePort => {
 	return {
 		findByIds: (ids: string[]): Promise<IVectorDocument[]> => findByIds(pinecone, config, ids),
 		save: (documents: IVectorDocument[]): Promise<void> => save(pinecone, config, documents),
@@ -113,12 +113,6 @@ const create = (pinecone: Pinecone, config: PineconeConfig): IVectorStorePort =>
 	};
 };
 
-// ============================================
-// Exports
-// ============================================
 
-export const PineconeAdapter = {
-	create,
-};
+export default createPineconeAdapter;
 
-export default PineconeAdapter;
