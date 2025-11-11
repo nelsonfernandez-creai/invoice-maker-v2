@@ -100,6 +100,42 @@ async function save(
 }
 
 /**
+ * Update a bussines activity
+ * @param client - The DynamoDB client
+ * @param tableName - The table name
+ * @param bussinesActivity - The bussines activity
+ */
+async function update(
+	client: IDynamoDBClientAdapter,
+	tableName: string,
+	id: string,
+	bussinesActivity: IBussinesActivity
+): Promise<void> {
+	try {
+		const dto = toDatabaseDto(bussinesActivity);
+		const now = new Date().toISOString();
+
+		await client.update({
+			TableName: tableName,
+			Key: {
+				pk: 'BUSINESS_ACTIVITY',
+				sk: id,
+			},
+			UpdateExpression: 'set #name = :name, #skus = :skus, #updatedAt = :updatedAt',
+			ExpressionAttributeNames: {
+				'#name': 'name',
+				'#skus': 'skus',
+				'#updatedAt': 'updatedAt',
+			},
+			ExpressionAttributeValues: {
+				':name': dto.name,
+				':skus': dto.skus,
+				':updatedAt': now,
+			},
+		});
+	} catch (error) {}
+}
+/**
  * Creates a new bussines activity repository
  * @param config - The bussines activity repository config
  * @returns The bussines activity repository
@@ -110,6 +146,7 @@ const create = (config: IBussinesActivityRepositoryConfig): IBussinesActivityRep
 	return {
 		findById: (id: string) => findById(client, tableName, id),
 		save: (bussinesActivity: IBussinesActivity) => save(client, tableName, bussinesActivity),
+		update: (id: string, bussinesActivity: IBussinesActivity) => update(client, tableName, id, bussinesActivity),
 	};
 };
 

@@ -13,7 +13,14 @@ export interface IBussinesActivityRepository {
 	/**
 	 * Save a bussines activity
 	 * @param bussinesActivity - The bussines activity
-	 * @returns The bussines activity
+	 * @returns void
 	 */
 	save(bussinesActivity: IBussinesActivity): Promise<void>;
+	/**
+	 * Update a bussines activity
+	 * @param id - The id of the bussines activity
+	 * @param bussinesActivity - The bussines activity
+	 * @returns void
+	 */
+	update(id: string, bussinesActivity: IBussinesActivity): Promise<void>;
 }
