@@ -9,5 +9,5 @@ export interface IMetadataApiPort {
 	 * @param id - The id of the catalog
 	 * @returns The catalog
 	 */
-	fetchCatalog(id: string): Promise<IEcommerceProduct[]>;
+	fetchEcommerceProducts(id: string): Promise<IEcommerceProduct[]>;
 }
