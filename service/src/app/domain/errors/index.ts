@@ -1,8 +1,16 @@
 /**
  * Interface for all domain errors
  */
-export interface IDomainError extends Error {
+
+export class DomainError extends Error {
 	code: number;
+	name: string;
+
+	constructor(message: string, code: number, name: string) {
+		super(message);
+		this.code = code;
+		this.name = name;
+	}
 }
 
 /**
@@ -12,13 +20,8 @@ export interface IDomainError extends Error {
  * @param name - The error name
  * @returns The created error object
  */
-function create(code: number, message: string, name: string): IDomainError {
-	const error = new Error(message) as IDomainError;
-	error.code = code;
-	error.name = name;
-	error.stack = new Error().stack;
-
-	return error;
+function create(code: number, message: string, name: string): DomainError {
+	return new DomainError(message, code, name);
 }
 
 // ============================================
@@ -31,7 +34,7 @@ function create(code: number, message: string, name: string): IDomainError {
  * @param code - The error code
  * @returns The created error object
  */
-export function ValidationError(message: string, code: number = 400): IDomainError {
+export function ValidationError(message: string, code: number = 400): DomainError {
 	return create(code, `Validation error: ${message}`, 'ValidationError');
 }
 
@@ -45,7 +48,7 @@ export function ValidationError(message: string, code: number = 400): IDomainErr
  * @param code - The error code
  * @returns The created error object
  */
-export function ExternalServiceError(message: string, code: number = 500): IDomainError {
+export function ExternalServiceError(message: string, code: number = 500): DomainError {
 	return create(code, `External service error: ${message}`, 'ExternalServiceError');
 }
 
@@ -58,7 +61,7 @@ export function ExternalServiceError(message: string, code: number = 500): IDoma
  * @param message - The error message
  * @returns The created error object
  */
-export function NotAuthorizedError(message: string): IDomainError {
+export function NotAuthorizedError(message: string): DomainError {
 	return create(401, `Not authorized error: ${message}`, 'NotAuthorizedError');
 }
 
@@ -71,7 +74,7 @@ export function NotAuthorizedError(message: string): IDomainError {
  * @param message - The error message
  * @returns The created error object
  */
-export function BadRequestError(message: string): IDomainError {
+export function BadRequestError(message: string): DomainError {
 	return create(400, `Bad request: ${message}`, 'BadRequestError');
 }
 
@@ -80,6 +83,6 @@ export function BadRequestError(message: string): IDomainError {
  * @param message - The error message
  * @returns The created error object
  */
-export function MissingPathParameterError(message: string): IDomainError {
+export function MissingPathParameterError(message: string): DomainError {
 	return create(404, `Missing path parameter: ${message || 'Missing path parameter'}`, 'MissingPathParameterError');
 }

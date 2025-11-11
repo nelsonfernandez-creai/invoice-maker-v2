@@ -1,5 +1,5 @@
 import { APIGatewayProxyResultV2 } from 'aws-lambda';
-import { IDomainError } from '@domain/errors';
+import { DomainError } from '@domain/errors';
 
 export class HttpResponseBuilder {
 	static success(data: any, statusCode: number = 200): APIGatewayProxyResultV2 {
@@ -9,7 +9,7 @@ export class HttpResponseBuilder {
 		};
 	}
 
-	static error(error: IDomainError): APIGatewayProxyResultV2 {
+	static error(error: DomainError): APIGatewayProxyResultV2 {
 		const status = error.code;
 		const body = {
 			error: error.message || 'Internal server error',

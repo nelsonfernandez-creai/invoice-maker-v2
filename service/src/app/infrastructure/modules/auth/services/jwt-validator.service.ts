@@ -1,7 +1,7 @@
 // infrastructure/adapters/auth/services/jwt-validator.service.ts
 import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa-v2';
-import { IDomainError, NotAuthorizedError } from '@domain/errors';
+import { DomainError, NotAuthorizedError } from '@domain/errors';
 
 export class JwtValidatorService {
 	private client: jwksClient.JwksClient;
@@ -34,7 +34,7 @@ export class JwtValidatorService {
 		});
 	}
 
-	private handleJwtError(err: any): IDomainError {
+	private handleJwtError(err: any): DomainError {
 		if (err.name === 'TokenExpiredError') {
 			return NotAuthorizedError('Token expired');
 		}
