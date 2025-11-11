@@ -37,10 +37,36 @@ function validateNonNegativeNumber(fieldName: string, value: number): void {
 	}
 }
 
+/**
+ * Validates that a value is not null
+ * @param fieldName - The name of the field to validate
+ * @param value - The value of the field to validate
+ * @throws ValidationError if the field is required and is not provided
+ */
+function validateNotNull(fieldName: string, value: any): void {
+	if (value === undefined || value === null) {
+		throw ValidationError(`${fieldName} is required and must be not null`);
+	}
+}
+
+/**
+ * Validates that a value is not empty
+ * @param fieldName - The name of the field to validate
+ * @param value - The value of the field to validate
+ * @throws ValidationError if the field is required and is not provided
+ */
+function validateNotEmpty(fieldName: string, value: any): void {
+	if (value === undefined || value === null || value.length === 0) {
+		throw ValidationError(`${fieldName} is required and must be not empty`);
+	}
+}
+
 export const DomainValidatorUtils = {
 	validateRequiredString,
 	validatePositiveNumber,
 	validateNonNegativeNumber,
+	validateNotNull,
+	validateNotEmpty
 } as const;
 
 export default DomainValidatorUtils;
