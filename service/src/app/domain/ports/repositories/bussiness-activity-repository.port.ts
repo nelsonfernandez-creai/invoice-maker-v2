@@ -9,7 +9,7 @@ export interface IBussinesActivityRepository {
 	 * @param id - The id of the bussines activity
 	 * @returns The bussines activity
 	 */
-	findById(id: string): Promise<IBussinesActivity | null>;
+	findById(id: string): Promise<IBussinesActivity | undefined>;
 	/**
 	 * Save a bussines activity
 	 * @param bussinesActivity - The bussines activity
