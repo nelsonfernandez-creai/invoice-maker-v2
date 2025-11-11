@@ -1,7 +1,7 @@
 import Ecommerce, { IEcommerce } from '@domain/entities/ecommerce.entity';
 import EcommerceProduct, { IEcommerceProduct } from '@domain/entities/ecommerce-product.entity';
 import EcommerceJurisdiction, { IEcommerceJurisdiction } from '@domain/entities/ecommerce-jurisdiction.entity';
-import { B2SProduct, B2SEcommerce, B2SJurisdiction } from '../dto/metadata.dto';
+import { B2SProduct, B2SEcommerce, B2SJurisdiction } from '../dto/http.dto';
 
 
 /**
