@@ -20,7 +20,7 @@ export interface PersistenceTransforms<TDomain, TDatabase = any> {
  * Port for Persistence Store Client operations
  * Defines the contract for Persistence Store operations following hexagonal architecture
  */
-export interface IPersistenceClient<T> {
+export interface IPersistenceNoSqlClient<T> {
 	/**
 	 * Get an item from Persistence Store
 	 * @param key - The key of the item
