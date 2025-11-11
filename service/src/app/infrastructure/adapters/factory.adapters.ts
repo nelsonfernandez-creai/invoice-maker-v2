@@ -3,10 +3,17 @@
 import { IAuthenticationService } from '@domain/ports/services/autentication.port';
 import CognitoAuthAdapter from './services/cognito-auth.adapter';
 
+/**
+ * Adapter factory interface
+ */
 export interface IAdapterFactory {
 	createAuthenticationService(): IAuthenticationService;
 }
 
+/**
+ * Adapter factory implementation
+ * @returns The adapter factory
+ */
 export const AdapterFactory: IAdapterFactory = {
 	createAuthenticationService: () =>
 		CognitoAuthAdapter.create({
