@@ -1,7 +1,7 @@
 /**
  * Interface for all domain errors
  */
-export interface DomainError extends Error {
+export interface IDomainError extends Error {
 	code: number;
 }
 
@@ -12,8 +12,8 @@ export interface DomainError extends Error {
  * @param name - The error name
  * @returns The created error object
  */
-function create(code: number, message: string, name: string): DomainError {
-	const error = new Error(message) as DomainError;
+function create(code: number, message: string, name: string): IDomainError {
+	const error = new Error(message) as IDomainError;
 	error.code = code;
 	error.name = name;
 	error.stack = new Error().stack;
@@ -31,7 +31,7 @@ function create(code: number, message: string, name: string): DomainError {
  * @param code - The error code
  * @returns The created error object
  */
-export function ValidationError(message: string, code: number = 400): DomainError {
+export function ValidationError(message: string, code: number = 400): IDomainError {
 	return create(code, `Validation error: ${message}`, 'ValidationError');
 }
 
@@ -39,6 +39,25 @@ export function ValidationError(message: string, code: number = 400): DomainErro
 // Errors For External Services
 // ============================================
 
-export function ExternalServiceError(message: string, code: number = 500): DomainError {
+/**
+ * External service error
+ * @param message - The error message
+ * @param code - The error code
+ * @returns The created error object
+ */
+export function ExternalServiceError(message: string, code: number = 500): IDomainError {
 	return create(code, `External service error: ${message}`, 'ExternalServiceError');
+}
+
+// ============================================
+// Errors For Authentication
+// ============================================
+
+/**
+ * Not authorized error
+ * @param message - The error message
+ * @returns The created error object
+ */
+export function NotAuthorizedError(message: string): IDomainError {
+	return create(401, `Not authorized error: ${message}`, 'NotAuthorizedError');
 }
