@@ -5,6 +5,12 @@ import { PolicyBuilder } from '../builders/policy-builder';
 const jwksUri = process.env.COGNITO_IDP_URL!;
 const jwtValidator = new JwtValidatorService(jwksUri);
 
+const extractToken = (event: APIGatewayRequestAuthorizerEventV2): string | null => {
+	const authHeader = event?.headers?.authorization ?? event?.headers?.Authorization;
+	return authHeader?.replace('Bearer ', '') ?? null;
+};
+
+
 export const handler = async (event: APIGatewayRequestAuthorizerEventV2): Promise<APIGatewayAuthorizerResult> => {
 	try {
 		if (!jwksUri) {
@@ -26,9 +32,4 @@ export const handler = async (event: APIGatewayRequestAuthorizerEventV2): Promis
 
 		return PolicyBuilder.deny(event.routeArn, message);
 	}
-};
-
-const extractToken = (event: APIGatewayRequestAuthorizerEventV2): string | null => {
-	const authHeader = event?.headers?.authorization ?? event?.headers?.Authorization;
-	return authHeader?.replace('Bearer ', '') ?? null;
 };

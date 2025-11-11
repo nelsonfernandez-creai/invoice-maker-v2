@@ -3,7 +3,6 @@ import type { IAuthenticationService, LoginCredentials, AuthResult } from '@doma
 
 export interface ICognitoConfig {
 	region: string;
-	userPoolId: string;
 	clientId: string;
 };
 
