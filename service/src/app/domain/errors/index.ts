@@ -26,7 +26,7 @@ function create(code: number, message: string, name: string): IDomainError {
 // ============================================
 
 /**
- * 
+ *
  * @param message - The error message
  * @param code - The error code
  * @returns The created error object
@@ -60,4 +60,26 @@ export function ExternalServiceError(message: string, code: number = 500): IDoma
  */
 export function NotAuthorizedError(message: string): IDomainError {
 	return create(401, `Not authorized error: ${message}`, 'NotAuthorizedError');
+}
+
+// ============================================
+// Errors For Http Requests
+// ============================================
+
+/**
+ * Bad request error
+ * @param message - The error message
+ * @returns The created error object
+ */
+export function BadRequestError(message: string): IDomainError {
+	return create(400, `Bad request: ${message}`, 'BadRequestError');
+}
+
+/**
+ * Missing path parameter error
+ * @param message - The error message
+ * @returns The created error object
+ */
+export function MissingPathParameterError(message: string): IDomainError {
+	return create(404, `Missing path parameter: ${message || 'Missing path parameter'}`, 'MissingPathParameterError');
 }
