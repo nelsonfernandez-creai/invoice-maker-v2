@@ -1,8 +1,10 @@
 import { AxiosInstance } from 'axios';
 import { ExternalServiceError } from '@domain/errors';
 import { IMetadataApiPort } from '@domain/ports/services/metadata-api.port';
-import { B2SProduct, B2sApiResponse } from '@infrastructure/http/dto/metadata.dto';
+import { B2SEcommerce, B2SJurisdiction, B2SProduct, B2sApiResponse } from '@infrastructure/http/dto/metadata.dto';
+import { IEcommerce } from '@domain/entities/ecommerce.entity';
 import { IEcommerceProduct } from '@domain/entities/ecommerce-product.entity';
+import { IEcommerceJurisdiction } from '@domain/entities/ecommerce-jurisdiction.entity';
 import MetadataMapper from '../mapper/metadata.mapper';
 
 // ============================================
@@ -59,23 +61,55 @@ function isValidProduct(metadata: B2SProduct): boolean {
 // ============================================
 
 /**
+ * Fetch the metadata for a website
+ * @param id - The ID of the website
+ * @returns The metadata for the website
+ */
+async function fetchEcommerce(client: AxiosInstance, id: string): Promise<IEcommerce | null> {
+	const response = await fetch<{ websites: B2SEcommerce[] }>(client, `?web_ids=${id}`);
+	const website = response.body.websites[0];
+
+	if (!website) return null;
+
+	return MetadataMapper.mapToEcommerce(website);
+}
+
+/**
  * Fetch the metadata for a catalog item
  * @param id - The ID of the catalog item
  * @returns The metadata for the catalog item
  */
-async function fetchEcommerceProducts(client: AxiosInstance, id: string): Promise<IEcommerceProduct[]> {
+async function fetchProducts(client: AxiosInstance, id: string): Promise<IEcommerceProduct[]> {
 	const response = await fetch<{ products: B2SProduct[] }>(client, `?product=${id}`);
 
-	return response.body.products.filter(isValidProduct).map(MetadataMapper.mapToCatalog);
+	return response.body.products.filter(isValidProduct).map(MetadataMapper.mapToProduct);
+}
+
+/**
+ * Fetch the metadata for a jurisdiction
+ * @param jurisdictionId - The ID of the jurisdiction
+ * @returns The metadata for the jurisdiction
+ */
+async function fetchJurisdiction(client: AxiosInstance, jurisdictionId: string): Promise<IEcommerceJurisdiction[]> {
+	const response = await fetch<{ taxes: B2SJurisdiction[] }>(client, `?taxes=${jurisdictionId}`);
+
+	return response.body.taxes.map(MetadataMapper.mapToJurisdiction);
 }
 
 // ============================================
 // Commands
 // ============================================
 
+/**
+ * Create the metadata HTTP adapter
+ * @param client - The HTTP client
+ * @returns The metadata API port
+ */
 const create = (client: AxiosInstance): IMetadataApiPort => {
 	return {
-		fetchEcommerceProducts: (id: string): Promise<IEcommerceProduct[]> => fetchEcommerceProducts(client, id),
+		fetchEcommerce: (id: string): Promise<IEcommerce | null> => fetchEcommerce(client, id),
+		fetchProducts: (id: string): Promise<IEcommerceProduct[]> => fetchProducts(client, id),
+		fetchJurisdiction: (id: string): Promise<IEcommerceJurisdiction[]> => fetchJurisdiction(client, id),
 	};
 };
 
