@@ -7,34 +7,42 @@ type CognitoConfig = {
 	clientId: string;
 };
 
-const createCognitoAuthAdapter = (config: CognitoConfig): IAuthenticationService => {
-	const client = new CognitoIdentityProviderClient({ region: config.region });
+async function login(
+	client: CognitoIdentityProviderClient,
+	config: CognitoConfig,
+	credentials: LoginCredentials
+): Promise<AuthResult> {
+	const command = new InitiateAuthCommand({
+		AuthFlow: 'USER_PASSWORD_AUTH',
+		ClientId: config.clientId,
+		AuthParameters: {
+			USERNAME: credentials.username,
+			PASSWORD: credentials.password,
+		},
+	});
 
-	const login = async (credentials: LoginCredentials): Promise<AuthResult> => {
-		const command = new InitiateAuthCommand({
-			AuthFlow: 'USER_PASSWORD_AUTH',
-			ClientId: config.clientId,
-			AuthParameters: {
-				USERNAME: credentials.username,
-				PASSWORD: credentials.password,
-			},
-		});
+	const response = await client.send(command);
 
-		const response = await client.send(command);
-
-		if (!response.AuthenticationResult) {
-			throw new Error('Authentication failed');
-		}
-
-		return {
-			accessToken: response.AuthenticationResult.AccessToken!,
-			expiresIn: response.AuthenticationResult.ExpiresIn!,
-		};
-	};
+	if (!response.AuthenticationResult) {
+		throw new Error('Authentication failed');
+	}
 
 	return {
-		login,
+		accessToken: response.AuthenticationResult.AccessToken!,
+		expiresIn: response.AuthenticationResult.ExpiresIn!,
+	};
+}
+
+const create = (config: CognitoConfig): IAuthenticationService => {
+	const client = new CognitoIdentityProviderClient({ region: config.region });
+
+	return {
+		login: (credentials: LoginCredentials) => login(client, config, credentials),
 	};
 };
 
-export default createCognitoAuthAdapter;
+export const CognitoAuthAdapter = {
+	create,
+} as const;
+
+export default CognitoAuthAdapter;
