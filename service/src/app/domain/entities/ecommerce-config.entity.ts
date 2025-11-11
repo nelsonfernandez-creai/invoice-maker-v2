@@ -11,7 +11,7 @@ export interface IReference {
 /**
  * References to items in the ecommerce config
  */
-interface IReferences extends Map<string, IReference> {}
+export interface IReferences extends Map<string, IReference> {}
 
 /**
  * Ecommerce config entity

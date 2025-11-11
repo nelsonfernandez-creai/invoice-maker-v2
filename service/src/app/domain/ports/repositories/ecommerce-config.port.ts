@@ -9,7 +9,7 @@ export interface IEcommerceConfigRepository {
 	 * @param id - The id of the ecommerce config
 	 * @returns The ecommerce config
 	 */
-	findById(id: string): Promise<IEcommerceConfig | null>;
+	findById(id: string): Promise<IEcommerceConfig | undefined>;
 	/**
 	 * Save a ecommerce config
 	 * @param config - The ecommerce config
