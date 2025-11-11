@@ -36,7 +36,6 @@ function create(
 
 export const EcommerceJurisdiction = {
 	create,
-	validate,
 } as const;
 
 export default EcommerceJurisdiction;
