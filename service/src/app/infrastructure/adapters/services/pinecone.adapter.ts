@@ -2,10 +2,6 @@ import { Pinecone } from '@pinecone-database/pinecone';
 import { IVectorStorePort, IVectorDocument } from '@domain/ports/services/vector-store.port';
 import { ExternalServiceError } from '@domain/errors';
 
-// ============================================
-// Constants and interfaces
-// ============================================
-
 /**
  * Batch size for fetching documents
  */
@@ -23,10 +19,6 @@ interface PineconeConfig {
 	indexName: string;
 	namespace: string;
 }
-
-// ============================================
-// Queries
-// ============================================
 
 /**
  * Finds documents by their IDs
@@ -102,10 +94,11 @@ async function deleteIds(pinecone: Pinecone, config: PineconeConfig, ids: string
 	}
 }
 
-// ============================================
-// Commands
-// ============================================
-
+/**
+ * Creates a new Pinecone adapter
+ * @param config - The Pinecone config
+ * @returns The Pinecone adapter
+ */
 const create = (config: PineconeConfig): IVectorStorePort => {
 	const pinecone = new Pinecone({ apiKey: config.apiKey });
 
