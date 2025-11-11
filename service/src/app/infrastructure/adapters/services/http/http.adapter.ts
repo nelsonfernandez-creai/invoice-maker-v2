@@ -1,15 +1,26 @@
-import { AxiosInstance } from 'axios';
+import Axios, { AxiosInstance } from 'axios';
+import MetadataMapper from './mapper/http.mapper';
 import { ExternalServiceError } from '@domain/errors';
 import { IMetadataApiPort } from '@domain/ports/services/metadata-api.port';
-import { B2SEcommerce, B2SJurisdiction, B2SProduct, B2sApiResponse } from '@infrastructure/adapters/services/http/dto/http.dto';
-import { IEcommerce } from '@domain/entities/ecommerce.entity';
-import { IEcommerceProduct } from '@domain/entities/ecommerce-product.entity';
+import {
+	B2SEcommerce,
+	B2SJurisdiction,
+	B2SProduct,
+	B2sApiResponse,
+} from '@infrastructure/adapters/services/http/dto/http.dto';
 import { IEcommerceJurisdiction } from '@domain/entities/ecommerce-jurisdiction.entity';
-import MetadataMapper from './mapper/http.mapper';
+import { IEcommerceProduct } from '@domain/entities/ecommerce-product.entity';
+import { IEcommerce } from '@domain/entities/ecommerce.entity';
 
 // ============================================
 // Constants and interfaces
 // ============================================
+
+interface IMetadataApiConfig {
+	baseURL: string;
+	timeout: number;
+	headers: Record<string, string>;
+}
 
 /**
  * Status of a catalog item
@@ -105,11 +116,20 @@ async function fetchJurisdiction(client: AxiosInstance, jurisdictionId: string):
  * @param client - The HTTP client
  * @returns The metadata API port
  */
-const create = (client: AxiosInstance): IMetadataApiPort => {
+const create = (config: IMetadataApiConfig): IMetadataApiPort => {
+	const httpClient = Axios.create({
+		baseURL: config.baseURL,
+		timeout: config.timeout || 30000,
+		headers: {
+			'Content-Type': 'application/json',
+			...config.headers,
+		},
+	});
+
 	return {
-		fetchEcommerce: (id: string): Promise<IEcommerce | null> => fetchEcommerce(client, id),
-		fetchProducts: (id: string): Promise<IEcommerceProduct[]> => fetchProducts(client, id),
-		fetchJurisdiction: (id: string): Promise<IEcommerceJurisdiction[]> => fetchJurisdiction(client, id),
+		fetchEcommerce: (id: string) => fetchEcommerce(httpClient, id),
+		fetchProducts: (id: string) => fetchProducts(httpClient, id),
+		fetchJurisdiction: (id: string) => fetchJurisdiction(httpClient, id),
 	};
 };
 

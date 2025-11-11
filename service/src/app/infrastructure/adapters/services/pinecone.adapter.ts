@@ -19,6 +19,7 @@ const UPSERT_BATCH_SIZE: number = 100;
  * Pinecone config
  */
 interface PineconeConfig {
+	apiKey: string;
 	indexName: string;
 	namespace: string;
 }
@@ -105,11 +106,13 @@ async function deleteIds(pinecone: Pinecone, config: PineconeConfig, ids: string
 // Commands
 // ============================================
 
-const create = (pinecone: Pinecone, config: PineconeConfig): IVectorStorePort => {
+const create = (config: PineconeConfig): IVectorStorePort => {
+	const pinecone = new Pinecone({ apiKey: config.apiKey });
+
 	return {
-		findByIds: (ids: string[]): Promise<IVectorDocument[]> => findByIds(pinecone, config, ids),
-		save: (documents: IVectorDocument[]): Promise<void> => save(pinecone, config, documents),
-		deleteIds: (ids: string[]): Promise<void> => deleteIds(pinecone, config, ids),
+		findByIds: (ids: string[]) => findByIds(pinecone, config, ids),
+		save: (documents: IVectorDocument[]) => save(pinecone, config, documents),
+		deleteIds: (ids: string[]) => deleteIds(pinecone, config, ids),
 	};
 };
 
@@ -118,4 +121,3 @@ export const PineconeAdapter = {
 } as const;
 
 export default PineconeAdapter;
-

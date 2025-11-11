@@ -1,7 +1,7 @@
 import { CognitoIdentityProviderClient, InitiateAuthCommand } from '@aws-sdk/client-cognito-identity-provider';
 import type { IAuthenticationService, LoginCredentials, AuthResult } from '@domain/ports/services/autentication.port';
 
-type CognitoConfig = {
+export interface ICognitoConfig {
 	region: string;
 	userPoolId: string;
 	clientId: string;
@@ -9,7 +9,7 @@ type CognitoConfig = {
 
 async function login(
 	client: CognitoIdentityProviderClient,
-	config: CognitoConfig,
+	config: ICognitoConfig,
 	credentials: LoginCredentials
 ): Promise<AuthResult> {
 	const command = new InitiateAuthCommand({
@@ -33,7 +33,7 @@ async function login(
 	};
 }
 
-const create = (config: CognitoConfig): IAuthenticationService => {
+const create = (config: ICognitoConfig): IAuthenticationService => {
 	const client = new CognitoIdentityProviderClient({ region: config.region });
 
 	return {
