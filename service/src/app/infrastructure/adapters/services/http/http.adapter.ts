@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios';
 import { ExternalServiceError } from '@domain/errors';
 import { IMetadataApiPort } from '@domain/ports/services/metadata-api.port';
-import { B2SEcommerce, B2SJurisdiction, B2SProduct, B2sApiResponse } from '@infrastructure/adapters/http/dto/http.dto';
+import { B2SEcommerce, B2SJurisdiction, B2SProduct, B2sApiResponse } from '@infrastructure/adapters/services/http/dto/http.dto';
 import { IEcommerce } from '@domain/entities/ecommerce.entity';
 import { IEcommerceProduct } from '@domain/entities/ecommerce-product.entity';
 import { IEcommerceJurisdiction } from '@domain/entities/ecommerce-jurisdiction.entity';
