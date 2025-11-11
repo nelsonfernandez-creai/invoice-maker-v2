@@ -24,13 +24,8 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 
 /**
- * The DynamoDB adapter config
+ * The DynamoDB client adapter
  */
-interface DynamoDBAdapterConfig {
-	clientConfig: DynamoDBClientConfig;
-	tableName: string;
-}
-
 export interface IDynamoDBClientAdapter {
 	save: (params: PutCommandInput) => Promise<PutCommandOutput>;
 	get: (params: GetCommandInput) => Promise<GetCommandOutput>;
@@ -147,8 +142,8 @@ function batchGet(client: DynamoDBDocumentClient, params: BatchGetCommandInput):
  * @param config - The DynamoDB adapter config
  * @returns The DynamoDB adapter
  */
-const create = (config: DynamoDBAdapterConfig) => {
-	const client = getDocsClient(config.clientConfig);
+const create = (config: DynamoDBClientConfig) => {
+	const client = getDocsClient(config);
 
 	return {
 		save: (params: PutCommandInput) => save(client, params),
