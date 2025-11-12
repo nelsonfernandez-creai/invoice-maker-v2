@@ -86,3 +86,48 @@ export function BadRequestError(message: string): DomainError {
 export function MissingPathParameterError(message: string): DomainError {
 	return create(404, `Missing path parameter: ${message || 'Missing path parameter'}`, 'MissingPathParameterError');
 }
+
+// ============================================
+// Errors For Ecommerce
+// ============================================
+
+/**
+ * Ecommerce not found error
+ * @param message - The error message
+ * @returns The created error object
+ */
+export function EcommerceNotFoundError(message: string): DomainError {
+	return create(404, `Ecommerce not found: ${message}`, 'EcommerceNotFoundError');
+}
+
+/**
+ * Catalog not found error
+ * @param message - The error message
+ * @returns The created error object
+ */
+export function CatalogNotFoundError(message: string): DomainError {
+	return create(404, `Catalog not found: ${message}`, 'CatalogNotFoundError');
+}
+
+
+// ============================================
+// Errors For Embedding
+// ============================================
+
+/**
+ * Embedding not found error
+ * @param message - The error message
+ * @returns The created error object
+ */
+export function EmbeddingNotFoundError(message: string): DomainError {
+	return create(404, `Embedding not found: ${message}`, 'EmbeddingNotFoundError');
+}
+
+/**
+ * Validate that we got the same number of embeddings as documents
+ * @param message - The error message
+ * @returns The created error object
+ */
+export function ValidateNumberOfEmbeddingsError(message: string): DomainError {
+	return create(400, `Validation error: ${message}`, 'ValidateNumberOfEmbeddingsError');
+}

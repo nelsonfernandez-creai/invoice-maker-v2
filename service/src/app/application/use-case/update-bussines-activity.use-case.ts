@@ -4,22 +4,21 @@ import { BussinesActivity } from '@domain/entities/bussines-activity.entity';
 import DomainValidatorUtils from '@domain/utils/validator-domain.util';
 
 async function execute(repository: IBussinesActivityRepository, id: string, name: string, skus: number): Promise<void> {
+	DomainValidatorUtils.validateRequiredString('id', id);
+	DomainValidatorUtils.validateRequiredString('name', name);
+	DomainValidatorUtils.validatePositiveNumber('skus', skus);
+
 	try {
-		let bussinesActivity = await repository.findById(id);
-
-		if (bussinesActivity) {
-			DomainValidatorUtils.validateRequiredString('Name', name);
-			DomainValidatorUtils.validatePositiveNumber('Skus', skus);
-
-			bussinesActivity.name = name;
-			bussinesActivity.skus = skus;
-			
-			await repository.update(id, bussinesActivity);
-			return;
+		let instance = await repository.findById(id);
+		
+		if(!instance) {
+			instance = BussinesActivity.create(id, name, skus);
+			await repository.save(instance);
+		} else {
+			instance = BussinesActivity.create(id, name, skus);
+			await repository.update(id, instance);
 		}
 
-		bussinesActivity = BussinesActivity.create(id, name, skus);
-		await repository.save(bussinesActivity);
 	} catch (error: any) {
 		// Re-throw domain errors as-is
 		if (error instanceof DomainError) {
