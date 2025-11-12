@@ -7,23 +7,27 @@ import CreateEcommerceConfigUseCase from './create-ecommerce-config.use-case';
 /**
  * Interface for the update ecommerce config use case
  */
-interface IUpdateEcommerceConfigUseCase {
+interface IUseCaseProps {
 	readonly metadataApiService: IMetadataApiPort;
 	readonly configRepository: IEcommerceConfigRepository;
 	readonly embeddingService: IEmbeddingPort;
 	readonly vectorStore: IVectorStorePort;
 }
 
-const create = (config: IUpdateEcommerceConfigUseCase) => {
-	const useCase = CreateEcommerceConfigUseCase.create(config);
+// ============================================================================
+// USE CASE FACTORY
+// ============================================================================
+
+/**
+ * Factory function that creates the use case with dependency injection
+ * Returns an object with the execute method
+ */
+function UpdateEcommerceConfigUseCase(config: IUseCaseProps) {
+	const useCase = CreateEcommerceConfigUseCase(config, 'Failed to update ecommerce config');
 
 	return {
-		execute: (id: string) => useCase.execute(id),
+		execute: (id: string): Promise<void> => useCase.execute(id),
 	};
-};
-
-export const UpdateEcommerceConfigUseCase = {
-	create,
-} as const;
+}
 
 export default UpdateEcommerceConfigUseCase;

@@ -1,31 +1,170 @@
 import { ExternalServiceError, DomainError } from '@domain/errors';
 import { IBussinesActivityRepository } from '@domain/ports/repositories/bussiness-activity-repository.port';
-import { BussinesActivity } from '@domain/entities/bussines-activity.entity';
+import { BussinesActivity, IBussinesActivity } from '@domain/entities/bussines-activity.entity';
 import DomainValidatorUtils from '@domain/utils/validator-domain.util';
 
-const UpdateBussinesActivityUseCase = (repository: IBussinesActivityRepository) => {
+// ============================================================================
+// TYPE DEFINITIONS
+// ============================================================================
+
+interface IUseCaseProps {
+	readonly repository: IBussinesActivityRepository;
+}
+
+interface BusinessActivityInput {
+	readonly id: string;
+	readonly name: string;
+	readonly skus: number;
+}
+
+// ============================================================================
+// PURE FUNCTIONS - VALIDATION
+// ============================================================================
+
+/**
+ * Validates business activity input parameters
+ * Pure function: performs validation without side effects
+ */
+const validateInput = (input: BusinessActivityInput): void => {
+	DomainValidatorUtils.validateRequiredString('id', input.id);
+	DomainValidatorUtils.validateRequiredString('name', input.name);
+	DomainValidatorUtils.validatePositiveNumber('skus', input.skus);
+};
+
+// ============================================================================
+// PURE FUNCTIONS - ENTITY CREATION
+// ============================================================================
+
+/**
+ * Creates a business activity entity from input
+ * Pure function: creates entity without side effects
+ */
+const createBusinessActivityEntity = (input: BusinessActivityInput): IBussinesActivity =>
+	BussinesActivity.create(input.id, input.name, input.skus);
+
+// ============================================================================
+// SIDE EFFECTS - DATA FETCHING
+// ============================================================================
+
+/**
+ * Fetches existing business activity by ID
+ * Side effect: database query
+ */
+const fetchExistingActivity = async (
+	repository: IBussinesActivityRepository,
+	id: string
+): Promise<IBussinesActivity | undefined> => await repository.findById(id);
+
+// ============================================================================
+// SIDE EFFECTS - PERSISTENCE
+// ============================================================================
+
+/**
+ * Persists new business activity to repository
+ * Side effect: database insert operation
+ */
+const persistNewActivity = async (
+	repository: IBussinesActivityRepository,
+	entity: IBussinesActivity
+): Promise<void> => {
+	await repository.save(entity);
+};
+
+/**
+ * Updates existing business activity in repository
+ * Side effect: database update operation
+ */
+const updateExistingActivity = async (
+	repository: IBussinesActivityRepository,
+	id: string,
+	entity: IBussinesActivity
+): Promise<void> => {
+	await repository.update(id, entity);
+};
+
+/**
+ * Persists business activity (create or update based on existence)
+ * Side effect: database operation
+ */
+const persistBusinessActivity = async (
+	repository: IBussinesActivityRepository,
+	entity: IBussinesActivity,
+	exists: boolean
+): Promise<void> => {
+	if (exists) {
+		await updateExistingActivity(repository, entity.id, entity);
+	} else {
+		await persistNewActivity(repository, entity);
+	}
+};
+
+// ============================================================================
+// MAIN ORCHESTRATION - COMPOSING THE ENTIRE FLOW
+// ============================================================================
+
+/**
+ * Main orchestration function that composes the entire workflow
+ * Coordinates validation, entity creation, and upsert operation
+ */
+const orchestrateBusinessActivityUpdate = async (
+	config: IUseCaseProps,
+	input: BusinessActivityInput
+): Promise<void> => {
+	// Validate input (pure)
+	validateInput(input);
+
+	// Check if entity exists (side effect)
+	const existingActivity = await fetchExistingActivity(config.repository, input.id);
+
+	// Create entity (pure)
+	const entity = createBusinessActivityEntity(input);
+
+	// Persist entity with appropriate operation (side effect)
+	await persistBusinessActivity(config.repository, entity, !!existingActivity);
+};
+
+// ============================================================================
+// ERROR HANDLING
+// ============================================================================
+
+/**
+ * Wraps execution with centralized error handling
+ * Ensures domain errors are preserved and unexpected errors are wrapped
+ */
+const wrapWithErrorHandling =
+	(fn: (config: IUseCaseProps, input: BusinessActivityInput) => Promise<void>, errorMessage: string) =>
+	async (config: IUseCaseProps, input: BusinessActivityInput): Promise<void> => {
+		try {
+			await fn(config, input);
+		} catch (error: any) {
+			if (error instanceof DomainError) throw error;
+			throw ExternalServiceError(errorMessage, error);
+		}
+	};
+
+// ============================================================================
+// USE CASE FACTORY
+// ============================================================================
+
+/**
+ * Factory function that creates the use case with dependency injection
+ * Returns an object with the execute method
+ */
+function UpdateBussinesActivityUseCase(
+	repository: IBussinesActivityRepository,
+	errorMessage: string = 'Failed to update business activity'
+) {
+	const config: IUseCaseProps = { repository };
+
+	// Create error-wrapped version of orchestration
+	const safeExecute = wrapWithErrorHandling(orchestrateBusinessActivityUpdate, errorMessage);
+
 	return {
 		execute: async (id: string, name: string, skus: number): Promise<void> => {
-			try {
-				DomainValidatorUtils.validateRequiredString('id', id);
-				DomainValidatorUtils.validateRequiredString('name', name);
-				DomainValidatorUtils.validatePositiveNumber('skus', skus);
-
-				let instance = await repository.findById(id);
-
-				if (!instance) {
-					instance = BussinesActivity.create(id, name, skus);
-					await repository.save(instance);
-				} else {
-					instance = BussinesActivity.create(id, name, skus);
-					await repository.update(id, instance);
-				}
-			} catch (error: any) {
-				if (error instanceof DomainError) throw error;
-				throw ExternalServiceError('Failed to update bussines activity', error);
-			}
+			const input: BusinessActivityInput = { id, name, skus };
+			await safeExecute(config, input);
 		},
 	};
-};
+}
 
 export default UpdateBussinesActivityUseCase;
