@@ -1,6 +1,6 @@
 {
-	"name": "infrastructure",
-	"version": "1.0.0",
+	"name": "invoice-maker-v2",
+	"version": "2.0.0",
 	"description": "invoice maker service",
 	"author": "nelsonfernandez@creai.mx",
 	"license": "MIT",
@@ -18,7 +18,7 @@
 		"jsonwebtoken": "^9.0.2",
 		"jwks-rsa-v2": "^2.0.0",
 		"reflect-metadata": "^0.2.2",
-		"uuid": "^13.0.0",
+		"uuid": "^11.0.5",
 		"zod": "^4.1.12"
 	},
 	"devDependencies": {
@@ -26,6 +26,7 @@
 		"@types/aws-sdk": "^2.7.4",
 		"@types/jest": "^29.5.14",
 		"@types/node": "^22.10.7",
+		"serverless": "^4.22.0",
 		"serverless-offline": "^14.4.0",
 		"serverless-step-functions": "^3.23.3",
 		"ts-jest": "^29.3.4",
